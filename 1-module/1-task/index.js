@@ -13,7 +13,7 @@ setTimeout(() => {
         console.log(value); // 4
 
         setTimeout(() => {
-          console.log('Michael'); //  5
+          console.log('Michael'); //  6
 
           clearInterval(intervalId);
         }, 10);
