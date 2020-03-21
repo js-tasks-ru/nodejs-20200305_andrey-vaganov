@@ -49,29 +49,29 @@ server.on('request', (request, response) => {
           },
           () => {
             const limitStream = new LimitSizeStream({
-              limit: 1024,
+              limit: 10000,
               encoding: 'utf-8',
             });
 
             request.on('data', (chunk) => {
-              limitStream.write(chunk);
+              try {
+                limitStream.write(chunk);
+              } catch (error) {
+                response.statusCode = 413;
+                response.end();
+              }
             });
 
-            limitStream.on('error', () => {
-              response.statusCode = 413;
-              response.end();
-            });
-
-            // это событие точно вызывается
             request.on('end', () => {
-              limitStream.end();
-            });
-
-            // это событие почему-то не вызывается
-            limitStream.on('end', () => {
-              console.log('!END!');
-
-              // some file write logic here
+              limitStream.end(() => {
+                fs.writeFile(filepath, limitStream, (err) => {
+                  if (err) {
+                    throw err;
+                  }
+                  response.statusCode = 201;
+                  response.end();
+                });
+              });
             });
           }
       );
