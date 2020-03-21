@@ -62,10 +62,12 @@ server.on('request', (request, response) => {
               response.end();
             });
 
+            // это событие точно вызывается
             request.on('end', () => {
               limitStream.end();
             });
 
+            // это событие почему-то не вызывается
             limitStream.on('end', () => {
               console.log('!END!');
 
