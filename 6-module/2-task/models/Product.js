@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const connection = require('../libs/connection');
+const jsonTransformer = require('./transformers').jsonTransformer;
 
 const productSchema = new mongoose.Schema({
   title: {
@@ -30,6 +31,10 @@ const productSchema = new mongoose.Schema({
 
   images: [String],
 
+}, {
+  toJSON: {
+    transform: jsonTransformer,
+  },
 });
 
 module.exports = connection.model('Product', productSchema);
